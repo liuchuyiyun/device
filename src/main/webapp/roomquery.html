@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-cn" ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title></title>
+    <link rel="stylesheet" href="assets/css/pintuer.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/jquery.page.css">
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/pintuer.js"></script>
+    <style>
+        .warmp{
+            margin: 0px auto;
+        }
+    </style>
+    <script>
+        var app = angular.module('myApp', []);
+        app.config(function($httpProvider){
+            $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+        }).controller('myCtrl', function($scope,$http) {
+                    $scope.update1=function(roomtypename){
+                        $scope.a=roomtypename;
+                    };
+                    $http({
+                        method:'POST',
+                        url:'http://localhost:8080/roomparams',
+                        params:{
+                            page:"1"
+                        }
+                    }).success(function(data){
+                        $scope.information=data.Content;
+                        $("#page").Page({
+                            totalPages: Math.ceil(data.Total/8),//total Pages
+                            liNums: 7,//the li numbers(advice use odd)
+                            activeClass: 'activP', //active class style
+                            firstPage: '首页',//first button name
+                            lastPage: '末页',//last button name
+                            prv: '<<',//prev button name
+                            next: '>>',//next button name
+                            hasFirstPage: true,//whether has first button
+                            hasLastPage: true,//whether has last button
+                            hasPrv: true,//whether has prev button
+                            hasNext: true,//whether has next button
+                            callBack : function(page){
+                                $http({
+                                    method:'POST',
+                                    url:'http://localhost:8080/roomparams',
+                                    params:{
+                                        page:page
+                                    }
+                                }).success(function(data){
+                                    $scope.information=data.Content;
+                                })
+                            }
+                        });
+                    });
+
+            $scope.change=function(){
+                if($scope.roominfo==null){
+                        $scope.update1=function(roomtypename){
+                            $scope.a=roomtypename;
+                        };
+                        $http({
+                            method:'POST',
+                            url:'http://localhost:8080/roomparams',
+                            params:{
+                                page:"1"
+                            }
+                        }).success(function(data){
+                            console.log(data);
+                            $scope.information=data.Content;
+                            $("#page").Page({
+                                totalPages: Math.ceil(data.Total/8),//total Pages
+                                liNums: 7,//the li numbers(advice use odd)
+                                activeClass: 'activP', //active class style
+                                firstPage: '首页',//first button name
+                                lastPage: '末页',//last button name
+                                prv: '<<',//prev button name
+                                next: '>>',//next button name
+                                hasFirstPage: true,//whether has first button
+                                hasLastPage: true,//whether has last button
+                                hasPrv: true,//whether has prev button
+                                hasNext: true,//whether has next button
+                                callBack : function(page){
+                                    $http({
+                                        method:'POST',
+                                        url:'http://localhost:8080/roomparams',
+                                        params:{
+                                            page:page
+                                        }
+                                    }).success(function(data){
+                                        $scope.information=data.Content;
+                                    })
+                                }
+                            });
+                        });
+                }else{
+                    $scope.select();
+                }
+            };
+
+            $scope.rooms = [
+                {roomtypename : "主卧"},
+                {roomtypename : "客卧"},
+                {roomtypename : "儿童房"},
+                {roomtypename : "书房"},
+                {roomtypename : "厨房"},
+                {roomtypename : "卫生间"}
+            ];
+         $scope.update=function(){
+             if($scope.roomid!=null){
+                 $http({
+                     method:'POST',
+                     url:'http://localhost:8080/updateroom',
+                     params:{
+                         id:$scope.roomid,
+                         roomtypename:$scope.a,
+                         newroomtypename:document.getElementById("site2").value
+                     },
+                 })
+                         .then(function(response){
+                             if(response.data.code=='1'){
+                                 alert(response.data.msg);
+                                 window.location.reload();
+                             }else{
+                                 alert(response.data.msg);
+                             }
+                         });
+             }else{
+                 alert("房间ID不能为空");
+             }
+
+         };
+
+            $scope.select=function(){
+                $http({
+                    method:'POST',
+                    url:'http://localhost:8080/roomsearch',
+                    params:{
+                        page:"1",
+                        size:"8",
+                        info:$scope.roominfo
+                    }
+                }).success(function(response){
+                    $scope.information=response.Content;
+                    $("#page").Page({
+                        totalPages: Math.ceil(response.Total/8),//total Pages
+                        liNums: 7,//the li numbers(advice use odd)
+                        activeClass: 'activP', //active class style
+                        firstPage: '首页',//first button name
+                        lastPage: '末页',//last button name
+                        prv: '<<',//prev button name
+                        next: '>>',//next button name
+                        hasFirstPage: true,//whether has first button
+                        hasLastPage: true,//whether has last button
+                        hasPrv: true,//whether has prev button
+                        hasNext: true,//whether has next button
+                        callBack : function(page){
+                            $http({
+                                method:'POST',
+                                url:'http://localhost:8080/roomsearch',
+                                params:{
+                                    page:page
+                                }
+                            }).success(function(data){
+                                $scope.information=data.Content;
+                            })
+                        }
+                    });
+
+                })
+            };
+
+                    $scope.delete=function(id){
+                        $http({
+                            method:'POST',
+                            url:'http://localhost:8080/deleteroom',
+                            params:{
+                                id:id,
+                            },
+                        })
+                        .then(function(response){
+                            if(response.data.code=='1'){
+                                alert(response.data.msg);
+                                window.location.reload();
+                            }else{
+                                alert(response.data.msg);
+                            }
+                        });
+                    };
+        });
+
+    </script>
+</head>
+<body ng-controller="myCtrl">
+<div class="panel admin-panel"  >
+    <div class="panel-head"><strong class="icon-reorder"> 房间列表</strong></div>
+    <div class="body-content" >
+        <form class="form-x">
+            <div class="form-group" >
+                <div class="field">
+                    <input type="text" class="input w50"  placeholder="请输入房间信息" data-validate="required:请输入房间信息"
+                           ng-model="roominfo" ng-change="change()"/>
+
+                    <button class="button bg-main icon-check-square-o" ng-click="select()" >查询</button>
+
+                    <div class="tips"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <table class="table table-hover text-center">
+       <thead>
+        <tr>
+            <th >房间ID</th>
+            <th >房间类型</th>
+            <th >操作</th>
+        </tr>
+       </thead>
+        <tbody>
+        <tr ng-repeat="x in information" >
+            <td>{{x.id | uppercase}}</td>
+            <td>{{x.roomtypename|uppercase}}</td>
+            <td>
+                <div class="button-group">
+                <a class="button border-main"  ng-click="update1(x.roomtypename)" href="#add"><span class="icon-edit"></span> 修改</a>
+                <a class="button border-red"  ng-click="delete(x.id)"><span class="icon-trash-o"></span> 删除</a>
+            </div></td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="page"></div>
+    <script src="http://www.jq22.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="assets/js/jquery.page.js"></script>
+</div>
+<div class="panel admin-panel margin-top" id="add">
+    <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 修改房间</strong></div>
+    <div class="body-content">
+        <form  class="form-x" >
+            <div class="form-group">
+                <div class="label">
+                    <label>房间ID：</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input w50" ng-model="roomid" name="roomid" data-validate="required:请输入房间ID" style="height: 35px;width:220px;"/>
+                    <div class="tips"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                    <label style="margin-left: 45px">房间类型：</label>
+                    <select  class="selectpicker show-tick form-control" id="site2" style="margin-left: 6px;font-size:1rem;width:200px;height: 30px">
+                        <option ng-repeat="x in rooms" align="center">{{x.roomtypename}}</option>
+                    </select>
+                </div>
+            <div class="form-group">
+                <div class="label">
+                    <label></label>
+                </div>
+                <div class="field">
+                    <button class="button bg-main icon-check-square-o" type="submit" ng-click="update()"> 提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body></html>

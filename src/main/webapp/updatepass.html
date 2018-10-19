@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-cn" ng-app="updatepass">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title></title>
+    <link rel="stylesheet" href="assets/css/pintuer.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/pintuer.js"></script>
+</head>
+<script>
+    var app=angular.module("updatepass",[]);
+    app.config(function($httpProvider){
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+    }).controller("updatectrl",function($scope,$http){
+        $http.post("http://localhost:8080/querygate").then(function(response){
+            $scope.information = response.data[0];
+        });
+        $scope.update=function(){
+            if($scope.newpass!=null&&$scope.mpass!=null&&$scope.renewpass!=null){
+                $http.post("http://localhost:8080/updategate","name=admin"+"&pass="+$scope.mpass+"&newpass="+$scope.newpass)
+                        .then(function(response){
+                            if(response.data.code=="1"){
+                                alert("密码修改成功");
+                                window.location.reload();
+                            }else{
+                                alert("密码修改失败");
+                                window.location.reload();
+                            }
+                        });
+            }else{
+                alert("密码修改失败");
+            }
+        }
+    });
+</script>
+<body>
+<div class="panel admin-panel" ng-controller="updatectrl">
+    <div class="panel-head"><strong><span class="icon-key"></span> 修改会员密码</strong></div>
+    <div class="body-content">
+        <form class="form-x">
+            <div class="form-group">
+                <div class="label">
+                    <label>管理员帐号：</label>
+                </div>
+                <div class="field">
+                    <label style="line-height:33px;">
+                        {{information.connectname}}
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="mpass">原始密码：</label>
+                </div>
+                <div class="field">
+                    <input type="password" class="input w50" ng-model="mpass" id="mpass" name="mpass" size="50" placeholder="请输入原始密码" data-validate="required:请输入原始密码" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="newpass">新密码：</label>
+                </div>
+                <div class="field">
+                    <input type="password" class="input w50" ng-model="newpass" name="newpass" size="50" placeholder="请输入新密码" data-validate="required:请输入新密码,length#>=5:新密码不能小于5位" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="renewpass">确认新密码：</label>
+                </div>
+                <div class="field">
+                    <input type="password" class="input w50" ng-model="renewpass" name="renewpass" size="50" placeholder="请再次输入新密码" data-validate="required:请再次输入新密码,repeat#newpass:两次输入的密码不一致" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label></label>
+                </div>
+                <div class="field">
+                    <button class="button bg-main icon-check-square-o"   ng-click="update()"> 提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body></html>

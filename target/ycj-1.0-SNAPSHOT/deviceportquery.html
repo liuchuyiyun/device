@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/pintuer.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/jquery.page.css">
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/tether.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+</head>
+<body ng-controller="myCtrl">
+<div class="panel-head" >
+    <strong class="icon-reorder"> 设备列表</strong></div>
+<div class="body-content" >
+    <form class="form-x" action="">
+        <div class="form-group" >
+            <div class="field">
+                <input type="text" class="input w50" ng-model="deviceportinfo"  placeholder="请输入设备端口信息" data-validate="required:请输入设备端口信息" />
+
+                <button class="button bg-main icon-check-square-o" ng-click="select()">查询</button>
+
+                <div class="tips"></div>
+            </div>
+        </div>
+    </form>
+</div>
+<div>
+    <table class="table table-striped" style="text-align: center">
+        <thead>
+        <tr>
+            <th>端口号</th>
+            <th>端口意义</th>
+            <th>端口报警值</th>
+            <th>设备异常提醒消息</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="x in information" ng-show="show1">
+            <td>{{ x.port|uppercase}}</td>
+            <td>{{ x.portmean}}</td>
+            <td>{{ x.portalarm}}</td>
+            <td>{{ x.message}}</td>
+        </tr>
+        <tr ng-repeat="x in information2" ng-show="show2">
+            <td>{{ x.port|uppercase}}</td>
+            <td>{{ x.portmean}}</td>
+            <td>{{ x.portalarm}}</td>
+            <td>{{ x.message}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="page"></div>
+    <script src="http://www.jq22.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="assets/js/jquery.page.js"></script>
+</div>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope,$http) {
+        $scope.show1=true;
+        $scope.show2=false;
+        $http({
+            method:'POST',
+            url:'http://localhost:8080/deviceportparams',
+            params:{
+                page:"1"
+            }
+        }).success(function(data){
+            $scope.information=data.Content;
+            $("#page").Page({
+                totalPages: Math.ceil(data.Total/8),//total Pages
+                liNums: 7,//the li numbers(advice use odd)
+                activeClass: 'activP', //active class style
+                firstPage: '首页',//first button name
+                lastPage: '末页',//last button name
+                prv: '<<',//prev button name
+                next: '>>',//next button name
+                hasFirstPage: true,//whether has first button
+                hasLastPage: true,//whether has last button
+                hasPrv: true,//whether has prev button
+                hasNext: true,//whether has next button
+                callBack : function(page){
+                    $http({
+                        method:'POST',
+                        url:'http://localhost:8080/deviceportparams',
+                        params:{
+                            page:page
+                        }
+                    }).success(function(data){
+                        $scope.information=data.Content;
+                    })
+                }
+            });
+        });
+
+
+        $scope.select=function(){
+            $http({
+                method:'POST',
+                url:'http://localhost:8080/deviceportsearch',
+                params:{
+                    info:$scope.deviceportinfo
+                }
+            }).success(function(response){
+                $scope.show1=false;
+                $scope.show2=true;
+                $scope.information=response.Content;
+                console.log($scope.information);
+            })
+        };
+    });
+
+</script>
+</body>
+</html>

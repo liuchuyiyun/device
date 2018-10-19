@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-cn" ng-app="myapp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title></title>
+    <link rel="stylesheet" href="assets/css/pintuer.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" src="assets/css/bootstrap.min.css">
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/tether.min.js"></script>
+    <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="assets/js/pintuer.js"></script>
+
+    <script>
+        angular.module("myapp",[])
+                .config(function($httpProvider){
+                    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+                }).controller('selects',function($scope,$http){
+                    $http.get("http://localhost:8080/querygate")
+                            .then(function (response) {
+                                console.log(response.data);
+                                $scope.information = response.data;
+                            });
+            $scope.room = [
+                {roomtypename : "主卧"},
+                {roomtypename : "客卧"},
+                {roomtypename : "儿童房"},
+                {roomtypename : "书房"},
+                {roomtypename : "厨房"},
+                {roomtypename : "卫生间"}
+            ];
+                    $scope.insert=function(){
+                        $http.post("http://localhost:8080/insertroom","roomtypename="+document.getElementById("site").value)
+                .success(function(response){
+                            if(response.code='0'){
+                                alert(response.msg);
+                                window.location.reload();
+                            }else{
+                                alert(response.msg);
+                                window.location.reload();
+                            }
+                        })
+                    }
+                });
+    </script>
+</head>
+<body ng-controller="selects">
+<div class="panel admin-panel">
+    <div class="panel-head"><strong><span class="icon-key"></span> 房间添加</strong></div>
+    <div class="body-content">
+        <form class="form-x"  >
+            <div class="form-group">
+                <div class="label">
+                    <label >管理员帐号：</label>
+                </div>
+                <div class="field">
+                    <label style="line-height:33px;font-size: 1rem">
+                        {{information[0].connectname}}
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                  <label style="margin-left: 45px"> 房间类型：</label>
+                    <select  class="selectpicker show-tick form-control" id="site" style="font-size:1rem;width:200px;height: 30px">
+                        <option ng-repeat="x in room" >{{x.roomtypename}}</option>
+                    </select>
+            </div>
+
+            <div class="form-group">
+                <div class="label">
+                    <label></label>
+                </div>
+                <div class="field">
+                    <button class="button bg-main icon-check-square-o" type="submit" ng-click="insert()"> 提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body></html>

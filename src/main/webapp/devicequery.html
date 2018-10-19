@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/pintuer.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/jquery.page.css">
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/qrcode.js"></script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/pintuer.js"></script>
+    <script src="assets/js/tether.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    　<style type="text/css">
+    .bg2{
+        position: absolute;
+        left: 0%;
+        width: 100%;
+        height: 900px;
+        background-color: black;
+        z-index:999;
+        -moz-opacity: 0.3;
+        opacity:.30;
+        filter: alpha(opacity=30);
+    }
+</style>
+</head>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope,$http) {
+        $scope.show1=true;
+        $scope.show2=false;
+                    $http({
+                        method:'POST',
+                        url:'http://localhost:8080/deviceparams',
+                        params:{
+                            page:"1"
+                        }
+                    }).success(function(data){
+                        $scope.inquiry=data.Content;
+                        $("#page").Page({
+                            totalPages: Math.ceil(data.Total/8),//total Pages
+                            liNums: 7,//the li numbers(advice use odd)
+                            activeClass: 'activP', //active class style
+                            firstPage: '首页',//first button name
+                            lastPage: '末页',//last button name
+                            prv: '<<',//prev button name
+                            next: '>>',//next button name
+                            hasFirstPage: true,//whether has first button
+                            hasLastPage: true,//whether has last button
+                            hasPrv: true,//whether has prev button
+                            hasNext: true,//whether has next button
+                            callBack : function(page){
+                                $http({
+                                    method:'POST',
+                                    url:'http://localhost:8080/deviceparams',
+                                    params:{
+                                        page:page
+                                    }
+                                }).success(function(data){
+                                    $scope.inquiry=data.Content;
+                                })
+                            }
+                        });
+                    });
+        $scope.change=function(){
+            if($scope.deviceinfo==null){
+                            $http({
+                                method:'POST',
+                                url:'http://localhost:8080/deviceparams',
+                            }).success(function(data){
+                                $scope.inquiry=data.Content;
+                                $("#page").Page({
+                                    totalPages: Math.ceil(data.Total/8),//total Pages
+                                    liNums: 7,//the li numbers(advice use odd)
+                                    activeClass: 'activP', //active class style
+                                    firstPage: '首页',//first button name
+                                    lastPage: '末页',//last button name
+                                    prv: '<<',//prev button name
+                                    next: '>>',//next button name
+                                    hasFirstPage: true,//whether has first button
+                                    hasLastPage: true,//whether has last button
+                                    hasPrv: true,//whether has prev button
+                                    hasNext: true,//whether has next button
+                                    callBack : function(page){
+                                        $http({
+                                            method:'POST',
+                                            url:'http://localhost:8080/deviceparams',
+                                            params:{
+                                                page:page
+                                            }
+                                        }).success(function(data){
+                                            $scope.inquiry=data.Content;
+                                        })
+                                    }
+                                });
+                            });
+            }else{
+                $scope.select();
+            }
+        };
+        $scope.port2=function(newid){
+            console.log(newid);
+            self.location.href="devicep.html?"+newid;
+        };
+
+        $scope.select=function(id){
+            $http({
+                method:'POST',
+                url:'http://localhost:8080/devicesearch',
+                params:{
+                    info:$scope.deviceinfo
+                }
+            }).success(function(response){
+                $scope.show1=false;
+                $scope.show2=true;
+                $scope.erweima();
+                $scope.inquiry=response.Content;
+                $("#page").Page({
+                    totalPages: Math.ceil(response.Total/8),//total Pages
+                    liNums: 7,//the li numbers(advice use odd)
+                    activeClass: 'activP', //active class style
+                    firstPage: '首页',//first button name
+                    lastPage: '末页',//last button name
+                    prv: '<<',//prev button name
+                    next: '>>',//next button name
+                    hasFirstPage: true,//whether has first button
+                    hasLastPage: true,//whether has last button
+                    hasPrv: true,//whether has prev button
+                    hasNext: true,//whether has next button
+                    callBack : function(page){
+                        $http({
+                            method:'POST',
+                            url:'http://localhost:8080/devicesearch',
+                            params:{
+                                page:page,
+                                info:$scope.deviceinfo
+                            }
+                        }).success(function(data){
+                            $scope.inquiry=data.Content;
+                        })
+                    }
+                });
+
+            })
+        };
+
+
+        // 二维码对象
+        var qrcode;
+
+        // 默认设置
+        var content;
+        var size;
+
+        // 设置点击事件
+        $scope.erweima=function(id){
+            document.getElementById("erweima").style.display="block";
+
+            // 获取内容
+            content = id;
+            console.log(content);
+            content = content.replace(/(^\s*)|(\s*$)/g, "");
+
+            // 获取尺寸
+            size =270;
+
+            // 检查内容
+
+
+            // 检查尺寸
+            if(qrcode){
+                qrcode.clear();
+            }
+
+            // 创建二维码
+            qrcode = new QRCode(document.getElementById("qrcode"), {
+                width : size,//设置宽高
+                height : size
+            });
+
+
+            qrcode.makeCode(content);
+
+
+        };
+        $scope.hideerwei=function(){
+            document.getElementById("erweima").style.display="none";
+        };
+
+        $scope.port=function(id){
+           self.location.href="devicep.html?"+id;
+        };
+
+    });
+</script>
+<body ng-controller="myCtrl">
+<div id="erweima" style="display: none">
+    <div  style='width: 520px;margin-left: 26%;position: absolute;z-index: 10000;'>
+        <div class="panel admin-panel margin-top text-center" id="add">
+            <div class="panel-head"><strong style="font-size: 1.3rem"><span class="icon-pencil-square-o"></span> 二维码</strong></div>
+            <div style="height: 300px;">
+                <div id="qrcode" align="center" style="margin-top: 40px"></div>
+            </div>
+            <div style="height: 20px"></div>
+        </div>
+    </div>
+    <div class="bg2" ng-click="hideerwei()"></div>
+</div>
+<div class="panel-head" >
+    <strong class="icon-reorder"> 设备列表</strong></div>
+<div class="body-content" >
+    <form  class="form-x">
+        <div class="form-group" >
+            <div class="field">
+                <input type="text" class="input w50" ng-model="deviceinfo"  placeholder="请输入设备信息" data-validate="required:请输入设备信息" />
+
+                <button class="button bg-main icon-check-square-o"  ng-click="select(x.deviceType.id)">查询</button>
+
+                <div class="tips"></div>
+            </div>
+        </div>
+    </form>
+</div>
+<div>
+    <table class="table table-striped" style="text-align: center">
+        <thead>
+        <tr>
+            <th>设备ID</th>
+            <th>设备类型</th>
+            <th>16进制编号</th>
+            <th>英文</th>
+            <th>10进制编号</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="x in inquiry" ng-show="show1">
+            <td>{{x.deviceID | uppercase}}</td>
+            <td >{{x.deviceType.chinatypename | uppercase }}</a></td>
+            <td>{{ x.deviceType.hextypename | uppercase}}</td>
+            <td>{{x.deviceType.typename | uppercase}}</td>
+            <td>{{ x.deviceType.typenum | uppercase}}</td>
+            <td><div class="button-group">
+                <a class="button border-main"  ng-click="erweima(x.deviceID)"> 生成二维码</a>
+            </div>
+                <div class="button-group">
+                    <a class="button border-main"  ng-click="port(x.deviceType.id)" target="right"> 查看端口状态</a>
+                </div></td>
+        </tr>
+        <tr ng-repeat="x in inquiry" ng-show="show2">
+            <td>{{x.deviceid | uppercase}}</td>
+            <td >{{x.chinatypename | uppercase }}</a></td>
+            <td>{{ x.hextypename | uppercase}}</td>
+            <td>{{x.typename | uppercase}}</td>
+            <td>{{ x.typenum | uppercase}}</td>
+            <td><div class="button-group">
+                <a class="button border-main"  ng-click="erweima(x.deviceID)"> 生成二维码</a>
+            </div>
+                <div class="button-group">
+                    <a class="button border-main"  ng-click="port2(x.devicetypeid)" target="right"> 查看端口状态</a>
+                </div></td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="page"></div>
+    <script src="http://www.jq22.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="assets/js/jquery.page.js"></script>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+Manifest-Version: 1.0
+Class-Path: <output root> Maven: antlr:antlr:2.7.7 Maven: ch.qos.logba
+ ck:logback-classic:1.1.7 Maven: ch.qos.logback:logback-core:1.1.7 Mav
+ en: com.fasterxml.jackson.core:jackson-annotations:2.8.4 Maven: com.f
+ asterxml.jackson.core:jackson-core:2.8.4 Maven: com.fasterxml.jackson
+ .core:jackson-databind:2.8.4 Maven: com.fasterxml:classmate:1.3.3 Mav
+ en: dom4j:dom4j:1.6.1 Maven: javax.transaction:javax.transaction-api:
+ 1.2 Maven: javax.validation:validation-api:1.1.0.Final Maven: mysql:m
+ ysql-connector-java:5.1.36 Maven: org.apache.tomcat.embed:tomcat-embe
+ d-core:8.5.6 Maven: org.apache.tomcat.embed:tomcat-embed-el:8.5.6 Mav
+ en: org.apache.tomcat.embed:tomcat-embed-websocket:8.5.6 Maven: org.a
+ pache.tomcat:tomcat-jdbc:8.5.6 Maven: org.apache.tomcat:tomcat-juli:8
+ .5.6 Maven: org.aspectj:aspectjweaver:1.8.9 Maven: org.hibernate.comm
+ on:hibernate-commons-annotations:5.0.1.Final Maven: org.hibernate.jav
+ ax.persistence:hibernate-jpa-2.1-api:1.0.0.Final Maven: org.hibernate
+ :hibernate-core:5.0.11.Final Maven: org.hibernate:hibernate-entityman
+ ager:5.0.11.Final Maven: org.hibernate:hibernate-validator:5.2.4.Fina
+ l Maven: org.javassist:javassist:3.20.0-GA Maven: org.jboss.logging:j
+ boss-logging:3.3.0.Final Maven: org.jboss:jandex:2.0.0.Final Maven: o
+ rg.slf4j:jcl-over-slf4j:1.7.21 Maven: org.slf4j:jul-to-slf4j:1.7.21 M
+ aven: org.slf4j:log4j-over-slf4j:1.7.21 Maven: org.slf4j:slf4j-api:1.
+ 7.21 Maven: org.springframework.boot:spring-boot-autoconfigure:1.4.2.
+ RELEASE Maven: org.springframework.boot:spring-boot-starter-aop:1.4.2
+ .RELEASE Maven: org.springframework.boot:spring-boot-starter-data-jpa
+ :1.4.2.RELEASE Maven: org.springframework.boot:spring-boot-starter-jd
+ bc:1.4.2.RELEASE Maven: org.springframework.boot:spring-boot-starter-
+ logging:1.4.2.RELEASE Maven: org.springframework.boot:spring-boot-sta
+ rter-tomcat:1.4.2.RELEASE Maven: org.springframework.boot:spring-boot
+ -starter-web:1.4.2.RELEASE Maven: org.springframework.boot:spring-boo
+ t-starter:1.4.2.RELEASE Maven: org.springframework.boot:spring-boot:1
+ .4.2.RELEASE Maven: org.springframework.data:spring-data-commons:1.12
+ .5.RELEASE Maven: org.springframework.data:spring-data-jpa:1.10.5.REL
+ EASE Maven: org.springframework:spring-aop:4.3.4.RELEASE Maven: org.s
+ pringframework:spring-aspects:4.3.4.RELEASE Maven: org.springframewor
+ k:spring-beans:4.3.4.RELEASE Maven: org.springframework:spring-contex
+ t:4.3.4.RELEASE Maven: org.springframework:spring-core:4.3.4.RELEASE 
+ Maven: org.springframework:spring-expression:4.3.4.RELEASE Maven: org
+ .springframework:spring-jdbc:4.3.4.RELEASE Maven: org.springframework
+ :spring-orm:4.3.4.RELEASE Maven: org.springframework:spring-tx:4.3.4.
+ RELEASE Maven: org.springframework:spring-web:4.3.4.RELEASE Maven: or
+ g.springframework:spring-webmvc:4.3.4.RELEASE Maven: org.yaml:snakeya
+ ml:1.17 Maven: xml-apis:xml-apis:1.4.01 device.jar
+Main-Class: com.base.Application
+

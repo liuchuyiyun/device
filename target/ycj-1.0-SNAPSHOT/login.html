@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="loginapp">
+<head>
+    <meta  charset="UTF-8"  name="viewport" content="width=device-width,initial-scale=1">
+    <title>login</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/common.css" />
+    <link type="text/css" rel="stylesheet" href="assets/css/style.css" />
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/jquery-1.12.1.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+</head>
+<script>
+    var app=angular.module("loginapp",[]);
+    app.config(function($httpProvider){
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+    }).controller("logincontroller",function($scope,$http){
+        $scope.login=function(){
+            $http.post("http://localhost:8080/selectByGateIDAndConnectnameAndConnectpass","gateID="+$scope.gateid+"&name="+ $scope.connectname +"&pass="+ $scope.connectpass
+            ).then(function(response){
+                   if(response.data.code=="1"){
+//                       $http.post("http://localhost:8080/gategetimage","gateid="+$scope.gateid)
+                       location.href='index.html';
+                   }else if(response.data.code=="2"){
+                       alert(response.data.msg);
+                   }else if(response.data.code=="3"){
+                       alert(response.data.msg);
+                   }
+            });
+        };
+    });
+</script>
+<style>
+    .error{
+        color: #ff230d;
+        font-size: 20px;
+        height: 20px;
+        width:150px;
+        margin-right: 250px;
+    }
+</style>
+<body style="background-size:100%;background: url('assets/img/yx2.jpg')no-repeat">
+<form name="myform" ng-controller="logincontroller">
+<div class="banner-login">
+    <div class="containerl">
+        <div  class="wxlogin">
+            <div class="container" style="margin-right: 100px;margin-top: -10px">
+                <span style="font-size: 300%;color: #416499">欢迎登录企业设备资产管理web应用平台</span>
+                <div class="form-group" >
+                    <label for="gateid" style="font-size: 200%;float: left">网关ID </label>
+                    <input type="text" ng-model="gateid" class="form-control" id="gateid" name="gateid"  placeholder="请输入24位网关ID" style="width: 400px"
+                    required ng-minlength="24" ng-maxlength="24">
+                    <p class="error" ng-if="myform.gateid.$error.required&&myform.gateid.$touched">请输入网关ID</p>
+                    <p class="error" ng-if="(myform.gateid.$error.minlength || myform.gateid.$error.maxlength)
+        &&myform.gateid.$touched">网关id应为24位 </p>
+                </div>
+                <div class="form-group">
+                    <label for="connectname" style="font-size:200%;float: left">连接账户</label>
+                    <input type="text" ng-model="connectname" class="form-control" id="connectname" name="connnectname" placeholder="请输入连接账户" style="width: 400px"
+                    required>
+                    <p class="error" ng-if="myform.connnectname.$error.required&&myform.connnectname.$touched">账户不能为空</p>
+                </div>
+                <div class="form-group">
+                    <label for="connectpass" style="font-size:200%;float: left">连接密码</label>
+                    <input type="password" ng-model="connectpass" class="form-control"  id="connectpass" name="connectpass" placeholder="请输入密码" style="width:400px"
+                    required>
+                    <p class="error" ng-if="myform.connectpass.$error.required&&myform.connectpass.$touched">密码不能为空</p>
+                </div>
+
+                <div style="margin-top: 50px">
+                    <div style="float: right">
+                        <input type="submit" id="btnLogin"  class="btn btn-danger-outline" value="用户登录" ng-click="login()">
+                    </div>
+                    <div style="float: right"><input type="reset" id="btnLogin2"  class="btn btn-danger-outline" value="重 置"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+</body>
+</html>

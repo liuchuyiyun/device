@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="device:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="ycj-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="device:war exploded" />
+    </root>
+  </artifact>
+</component>

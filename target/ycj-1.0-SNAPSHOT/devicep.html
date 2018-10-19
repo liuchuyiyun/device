@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+    <html ng-app="myApp">
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/pintuer.css">
+        <link rel="stylesheet" href="assets/css/admin.css">
+        <link rel="stylesheet" href="assets/css/jquery.page.css">
+        <script src="assets/js/angular.js"></script>
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/tether.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+    </head>
+<body ng-controller="myCtrl">
+<div class="panel-head" >
+    <strong class="icon-reorder"> 设备端口状态</strong></div>
+<div>
+    <table class="table table-striped" style="text-align: center">
+        <thead>
+        <tr>
+            <th>端口号</th>
+            <th>端口意义</th>
+            <th>端口报警值</th>
+            <th>设备异常提醒消息</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="x in information">
+            <td>{{ x.port}}</td>
+            <td>{{ x.portmean}}</td>
+            <td>{{ x.portalarm}}</td>
+            <td>{{ x.message}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+    var app=angular.module("myApp",[]);
+    app.config(function($httpProvider){
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+    }).controller("myCtrl",function($scope,$http) {
+        var a=window.location.search;
+       var b=a.substring(1).split(",");
+        $scope.id=b[0];
+        $http({
+                method:'POST',
+                url:'http://localhost:8080/deviceport',
+                    params:{
+                        devicetypeid:$scope.id
+                }
+            }).success(function(response){
+            console.log(response);
+              $scope.information=response;
+        })
+    })
+</script>
+</html>

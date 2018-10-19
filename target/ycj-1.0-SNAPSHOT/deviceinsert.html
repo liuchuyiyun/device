@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="proapp">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link href="assets/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/fileinput.js" type="text/javascript"></script>
+    <script src="assets/js/tether.min.js"></script>
+    <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="assets/css/bootstrap.min.css"></script>
+    <script src="assets/css/font-awesome-4.7.0/css/font-awesome.css"></script>
+</head>
+<script>
+    var app=angular.module("proapp",[]);
+    app.controller("procontroller",function($scope,$http){
+        $scope.sites = [
+            {site : "急救信号"},
+            {site : "一氧化碳"},
+            {site : "烟雾传感器"},
+            {site : "燃气传感器"},
+            {site : "入侵传感器"},
+            {site : "漏水传感器"},
+            {site : "门磁传感器"},
+            {site : "温湿传感器"},
+            {site : "USB插座"},
+            {site : "水阀控制器"},
+            {site : "燃阀控制器"},
+            {site : "窗帘控制器"},
+            {site : "单火开关1开"},
+            {site : "基础模块"}
+        ];
+//        var data = [{pingming:"",xinghao:"",danwei:"",shuliang:"",price:"",
+//            department1:"",time:"",department2:"",baoguanren:"",jieshouren:"",
+//            jingbanren:"",beizhu:"",inputfile:""}];
+        $scope.tijiao=function() {
+                if(confirm($scope.deviceid+" "+document.getElementById("site").value))
+                {
+                    $http({
+                         method:'POST',
+                         url:'http://localhost:8080/deviceadd',
+                         params:{
+                           deviceID: $scope.deviceid,
+                           chinatypename:document.getElementById("site").value
+                           },
+            }).success(function(response) {
+                                if(response.code=="1"){
+                                    alert("设备入库成功");
+                                    window.location.reload();
+                                }else{
+                                    alert("设备入库失败");
+                                    window.location.reload();
+                                }
+                            });
+                }
+
+        }
+    });
+</script>
+<style>
+
+    .input_result{
+        position: relative;
+        top: -27px;
+        left: 180px;
+    }
+    p.success{
+        color: #5cb85c;
+    }
+    .error{
+
+        color: red;
+    }
+
+    input.error{
+        border: 2px red;
+    }
+
+
+</style>
+<body>
+<h2 align="center">设备信息入库</h2>
+<div ng-controller="procontroller">
+    <form class="form-horizontal" role="form" style="margin-left:200px;" name="deviceinsert" ng-class="{'has-success':deviceinsert.deviceid.$valid}">
+        <div class="form-group " style="width:70%">
+            <div class="col-md-6" style="float: left;width: 100%">
+                <label for="deviceid">设备ID</label>
+                <input type="text" class="form-control" id="deviceid" placeholder="请输入16位ID" name="deviceid" ng-model="deviceid" ng-minlength="16"
+                ng-maxlength="16" required>
+                <p class="fa fa-check input_result success" ng-if="deviceinsert.deviceid.$valid"></p>
+                <p class="error" ng-if="(deviceinsert.deviceid.$error.minlength || deviceinsert.deviceid.$error.maxlength)
+        &&deviceinsert.deviceid.$touched">设备ID应为16位 </p>
+                <p class="error" ng-if="deviceinsert.deviceid.$error.required&&deviceinsert.deviceid.$touched">设备ID不能为空</p>
+            </div>
+<br>
+            <div class="col-md-6"   style="float: left;width: 100%" >
+            <label >设备类型</label>
+                <select  class="selectpicker show-tick form-control" id="site">
+                    <option ng-repeat="x in sites" value="{{x.site}}">{{x.site}}</option>
+                </select>
+
+            </div>
+            <br>
+            <center><div style="margin-top: 10rem"> <input type="button" class="btn btn-primary"  value="提交"  ng-click="tijiao()" ></div></center>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>

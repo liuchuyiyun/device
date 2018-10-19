@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-cn" ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title></title>
+    <link rel="stylesheet" href="assets/css/pintuer.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/qrcode.js"></script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/pintuer.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope,$http) {
+            $http.get("http://localhost:8080/querygate")
+                    .then(function (response) {
+                        $scope.inquiry = response.data;
+
+                        $scope.select=function(){
+                            var array=[];
+                            $scope.inquiry = response.data;
+                            for(var i=0;i<$scope.inquiry.length;i++){
+                                if($scope.inquiry[i].gateID==$scope.information||$scope.inquiry[i].connectname==$scope.information
+                                        ||$scope.inquiry[i].connectpass==$scope.information){
+                                    array.push($scope.inquiry[i]);
+                                }
+                            }
+                            $scope.inquiry=array;
+                        }
+                    });
+            // 二维码对象
+            var qrcode;
+
+            // 默认设置
+            var content;
+            var size;
+
+            // 设置点击事件
+            $scope.erweima=function(id){
+                // 获取内容
+                content = id;
+                console.log(content);
+                content = content.replace(/(^\s*)|(\s*$)/g, "");
+
+                // 获取尺寸
+                size =270;
+
+
+                // 清除上次二维码
+                if(qrcode){
+                    qrcode.clear();
+                }
+
+                // 创建二维码
+                qrcode = new QRCode(document.getElementById("qrcode"), {
+                    width : size,//设置宽高
+                    height : size
+                });
+
+                qrcode.makeCode(content);
+
+            };
+        });
+    </script>
+</head>
+<body ng-controller="myCtrl">
+<div class="panel admin-panel" >
+    <div class="panel-head"><strong class="icon-reorder"> 网关列表</strong></div>
+    <div class="body-content" >
+        <form class="form-x">
+            <div class="form-group" >
+                <div class="field">
+                    <input type="text" class="input w50" ng-model="information"  placeholder="请输入网关信息" data-validate="required:请输入网关信息" />
+
+                    <button class="button bg-main icon-check-square-o" ng-click="select()">查询</button>
+
+                    <div class="tips"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <table class="table table-hover text-center">
+        <tr>
+            <th>网关ID</th>
+            <th>连接账号</th>
+            <th>连接密码</th>
+            <th>入库时间</th>
+            <th >操作</th>
+        </tr>
+
+            <tbody>
+            <tr ng-repeat="x in inquiry">
+                <td>{{ x.gateID }}</td>
+                <td>{{x.connectname}}</td>
+                <td>{{ x.connnectpass}}</td>
+                <td>{{x.inserttime}}</td>
+                <td><div class="button-group">
+                    <a class="button border-main"  ng-click="erweima(x.gateID)"> 生成二维码</a>
+            </div></td>
+            </tr>
+            </tbody>
+
+    </table>
+</div>
+
+<div class="panel admin-panel margin-top text-center" id="add">
+    <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 二维码</strong></div>
+    <div style="height: 300px;">
+        <div id="qrcode" align="center" style="margin-top: 40px"></div>
+    </div>
+</div>
+
+</body>
+</html>
